@@ -1,7 +1,3 @@
-# .github/workflows/sync-to-notion.yml
-# Запускается после merge в main.
-# Находит какие .md файлы изменились и обновляет соответствующие страницы в Notion.
-
 name: Sync to Notion
 
 on:
@@ -11,40 +7,37 @@ on:
       - 'core/**/*.md'
       - 'workspace/**/*.md'
       - 'inbox/**/*.md'
+      - 'test.md'
+
+permissions:
+  contents: read
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2  # нужно для git diff
-      
+          fetch-depth: 2
       - name: Get changed files
         id: changed
         run: |
           FILES=$(git diff --name-only HEAD~1 HEAD -- '*.md')
           echo "files=$FILES" >> $GITHUB_OUTPUT
-          echo "Changed files:"
-          echo "$FILES"
-      
+          echo "Changed files: $FILES"
       - name: Setup Python
         if: steps.changed.outputs.files != ''
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
       - name: Install dependencies
         if: steps.changed.outputs.files != ''
         run: pip install requests
-      
       - name: Sync to Notion
         if: steps.changed.outputs.files != ''
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           SYNC_CONFIG: sync_config.json
           REPO_ROOT: .
-        run: |
-          python sync_github_to_notion.py ${{ steps.changed.outputs.files }}
+        run: python sync_github_to_notion.py ${{ steps.changed.outputs.files }}
