@@ -24,6 +24,6 @@ jobs:
       - name: Sync from Notion
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT }}
           SYNC_CONFIG: sync_config.json
         run: python sync_notion_to_github.py
