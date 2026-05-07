@@ -1,0 +1,13 @@
+{
+  "github_repo": "tamara-payattention/test-notion",
+  "branch_prefix": "notion-sync",
+  "reviewer": "tamara-payattention",
+  "sync_interval_minutes": 60,
+  "pages": [
+    {
+      "notion_page_id": "35905876-e481-81fc-aadc-efc4e7e04c9c",
+      "git_path": "test.md",
+      "title": "Тестовая страница"
+    }
+  ]
+}
