@@ -1,0 +1,33 @@
+# .github/workflows/sync-from-notion.yml
+# Запускается каждый час. Проверяет изменения в Notion, создаёт PR если есть.
+# Можно также запустить вручную через кнопку "Run workflow" в GitHub.
+
+name: Sync from Notion
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # каждый час
+  workflow_dispatch:  # ручной запуск
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Install dependencies
+        run: pip install requests
+      
+      - name: Sync from Notion
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SYNC_CONFIG: sync_config.json
+        run: python sync_notion_to_github.py
